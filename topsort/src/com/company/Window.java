@@ -16,6 +16,7 @@ import static com.company.PAR_S.*;
 
 public class Window extends JFrame{
     private int z = 0;
+
     public String input = new String();
     private JTextPane textField;
     private JTextPane textArea;
@@ -26,6 +27,7 @@ public class Window extends JFrame{
     private JButton readFromFile;
     private JButton readFromField;
     private JPanel rootPanel;
+
     HashMap<Integer, ActiveVertex> points = new HashMap<>();
     HashMap<Integer, ActiveVertex> sort_points = new HashMap<>();
     Graph graph;
@@ -67,6 +69,10 @@ public class Window extends JFrame{
         rootPanel.add(readFromField);
         rootPanel.add(textField);
         rootPanel.add(textArea);
+
+        GraphViewer gv = new GraphViewer(this, graph);
+        rootPanel.add(gv);
+
         readFromFile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fd = new JFileChooser();//диалоговое окно
@@ -151,7 +157,7 @@ public class Window extends JFrame{
         super.paint(g);
         g.drawRect(5, 50, 900, 450);
 
-        drawGraph(g, points);
+        //drawGraph(g, points);
         int x = 100;
         LinkedList<Integer> l = sort.ans;
         for (int i = 0; i < sort.ans.size(); i++) {
@@ -159,7 +165,7 @@ public class Window extends JFrame{
                 x += 100;
         }
         flag = true;
-        drawGraph(g, sort_points);
+        //drawGraph(g, sort_points);
     }
 
     private void drawGraph(Graphics g, HashMap<Integer, ActiveVertex> points) {
