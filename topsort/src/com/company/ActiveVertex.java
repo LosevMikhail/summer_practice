@@ -15,6 +15,7 @@ public class ActiveVertex extends JPanel implements MouseListener, MouseMotionLi
     Container parent;
     Point point;
     final int v;
+    StyleSheet style;
     private final static int VERTEX_R = 25;
     private final static int VERTEX_D = VERTEX_R*2;
     private Point mouse = new Point();
@@ -24,14 +25,15 @@ public class ActiveVertex extends JPanel implements MouseListener, MouseMotionLi
 
     ActiveVertex( Container parent, int v, int x, int y ) {
         this.setPreferredSize(new Dimension(VERTEX_D, VERTEX_D));
+        this.style = new StyleSheet(Color.BLACK, Color.BLACK, Color.RED);
 
         this.parent = parent;
         this.v = v;
-
+        this.setBounds(x, y, VERTEX_D, VERTEX_D);
         point = new Point(x, y);
 
-        setSize(new Dimension( VERTEX_D, VERTEX_D));
-        setLocation(point.x- VERTEX_R, point.y- VERTEX_R);
+        //setSize(new Dimension( VERTEX_D, VERTEX_D));
+        //setLocation(point.x, point.y);
         parent.addMouseMotionListener(this);
         parent.addMouseListener(this);
     }
@@ -39,8 +41,10 @@ public class ActiveVertex extends JPanel implements MouseListener, MouseMotionLi
     // Движение вершины
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println("mouse pressed");
-        if ((point.x - e.getX()) * (point.x - e.getX()) + (point.y - e.getY()) * (point.y - e.getY()) < VERTEX_R * VERTEX_R) {
+        System.out.println("mouse pressed (" + e.getX() + ", " + e.getY() + ")");
+        System.out.println(point.x + ", " +  point.y + ", " + this.getBounds().height);
+        if (Math.pow(point.x + VERTEX_R - e.getX(), 2) +
+                Math.pow(point.y + VERTEX_R - e.getY(), 2) < VERTEX_R * VERTEX_R) {
             flagCanMove = true;
             mouse.x = e.getX();
             mouse.y = e.getY();
@@ -57,21 +61,23 @@ public class ActiveVertex extends JPanel implements MouseListener, MouseMotionLi
     @Override
     public void mouseDragged(MouseEvent e) {
         if (flagCanMove) {
-            int dx = e.getX() - point.x;
-            int dy = e.getY() - point.y;
+            int dx = e.getX() - mouse.x;
+            mouse.x = e.getX();
+            int dy = e.getY() - mouse.y;
+            mouse.y = e.getY();
 
             int x = point.x + dx;
-            if (x- VERTEX_R < 0) point.x = VERTEX_R;
-            else if (x+ VERTEX_R>600) point.x = 600- VERTEX_R;
+            if (x < 0) point.x = 0;
+            else if (x > 600 - VERTEX_D) point.x = 600 - VERTEX_D;
             else point.x = x;
 
             int y = point.y + dy;
-            if (y- VERTEX_R < 0) point.y = VERTEX_R;
-            else if (y+ VERTEX_R>500) point.y = 500- VERTEX_R;
+            if (y < 0) point.y = 0;
+            else if (y > 500 - VERTEX_D) point.y = 500 - VERTEX_D;
             else point.y = y;
 
-            setLocation(point.x- VERTEX_R, point.y- VERTEX_R);
-            parent.repaint(point.x - VERTEX_R, point.y - VERTEX_R, VERTEX_D, VERTEX_D);
+            setLocation(point.x, point.y);
+            parent.repaint(point.x, point.y, VERTEX_D, VERTEX_D);
         }
     }
 
@@ -89,7 +95,16 @@ public class ActiveVertex extends JPanel implements MouseListener, MouseMotionLi
 
     @Override
     public void paintComponent(Graphics graphics) {
-        //super.paintComponent(graphics);
-        graphics.drawOval(50, 50, 30, 100);
+        graphics.setColor(style.getFillColor());
+        graphics.fillOval(0, 0, VERTEX_D, VERTEX_D);
+        graphics.setColor(style.getBorderColor());
+        graphics.drawOval(0,0, VERTEX_D, VERTEX_D);
+        graphics.setColor(style.getFontClor());
+        String vertexLabel = Integer.toString(v);
+
+        FontMetrics metrics = graphics.getFontMetrics(graphics.getFont());
+        graphics.drawString(vertexLabel, VERTEX_R - metrics.stringWidth(vertexLabel) / 2,
+                VERTEX_R - metrics.getHeight() / 2 + metrics.getAscent()); // center the label
+        // https://stackoverflow.com/questions/27706197/how-can-i-center-graphics-drawstring-in-java
     }
 }

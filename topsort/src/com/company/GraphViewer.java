@@ -12,6 +12,7 @@ import static com.company.PAR_S.*;
     - основная идея для GraphViewr
  */
 
+
 public class GraphViewer extends JPanel {
     private final static int DEFAULT_WIDTH = 600;
     private final static int DEFAULT_HEIGHT = 500;
@@ -34,19 +35,27 @@ public class GraphViewer extends JPanel {
         setBackground(Color.BLUE);
         setBounds(0,0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
+        setLayout(null);
+
         setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
+        //setLayout(new BorderLayout());
+
         for (Integer vertex: graph.getVertexes()) { //
-            Random randomizer = new Random();
+            Random random = new Random();
             // TODO: change VERTEX_D to something that feeds better:
             ActiveVertex activeVertex = new ActiveVertex(this, vertex,
-                    randomizer.nextInt(this.getWidth() - VERTEX_D) + VERTEX_R,
-                    randomizer.nextInt(this.getHeight() - VERTEX_D) + VERTEX_R);
+                    random.nextInt(this.getWidth() - VERTEX_D) + VERTEX_R,
+                    random.nextInt(this.getHeight() - VERTEX_D) + VERTEX_R);
 
             // dont have to store vertex components any other way, just add it
             this.add(activeVertex);
+            System.out.println("ActiveVertex added: " + activeVertex.toString());
+
+
         }
-        add(new JButton("asdsadsadasd")); // test
+
+
     }
 
     /*

@@ -43,8 +43,9 @@ public class Window extends JFrame{
         this.rootPanel = new JPanel();
         rootPanel.setLayout(null);      //абсолютное позиционирование
         rootPanel.setBounds(0,0,1400,700);
-        this.setBounds(300,100,750,700);
+        this.setBounds(100,100,1400,700);
         setContentPane(rootPanel);
+
         addEdge = new JButton("add edge");
         CreateGraph = new JButton("make graph");
         Step = new JButton("next step");
@@ -53,14 +54,16 @@ public class Window extends JFrame{
         textField = new JTextPane();
         readFromField = new JButton("read from field");
         textArea = new JTextPane();
+
         textArea.setBounds(500,550, 363,100);
         textField.setBounds(1000,100,363,100);
-        this.addEdge.setBounds(1200,350,163,24);
-        this.CreateGraph.setBounds(1200,400,163,24);
-        this.Step.setBounds(1200,450,163,24);
-        this.RunAlg.setBounds(1200,500,163,24);
-        this.readFromField.setBounds(1200,550,163,24);
-        this.readFromFile.setBounds(1200,600,163,24);
+        addEdge.setBounds(1200,350,163,24);
+        CreateGraph.setBounds(1200,400,163,24);
+        Step.setBounds(1200,450,163,24);
+        RunAlg.setBounds(1200,500,163,24);
+        readFromField.setBounds(1200,550,163,24);
+        readFromFile.setBounds(1200,600,163,24);
+
         rootPanel.add(addEdge);
         rootPanel.add(CreateGraph);
         rootPanel.add(Step);
@@ -69,6 +72,18 @@ public class Window extends JFrame{
         rootPanel.add(readFromField);
         rootPanel.add(textField);
         rootPanel.add(textArea);
+
+       /*
+        MyCircle circle = new MyCircle(0, 0);
+        rootPanel.add(circle);
+        circle = new MyCircle(350, 350);
+
+        rootPanel.add(circle);
+        circle = new MyCircle(250, 250);
+        rootPanel.add(circle);
+*/
+
+        //rootPanel.add(new ActiveVertex(this, 10, 50, 50));
 
         GraphViewer gv = new GraphViewer(this, graph);
         rootPanel.add(gv);
