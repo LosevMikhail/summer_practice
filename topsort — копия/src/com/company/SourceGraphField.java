@@ -1,5 +1,6 @@
 package com.company;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -9,6 +10,29 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import static com.company.PAR_S.*;
+
+
+class MyCircle extends JComponent {
+    private JPanel parent;
+    private int x;
+    private int y;
+
+    MyCircle(JPanel parent, int x, int y) {
+        this.parent = parent;
+        this.x = x;
+        this.y = y;
+        this.setBounds(x, y, 10, 10);
+        this.setPreferredSize(new Dimension(10, 10));
+    }
+
+    @Override
+    public void paintComponent(Graphics g){
+        super.paintComponent(g);
+        g.fillOval(0,0,10,10);
+        parent.repaint();
+    }
+
+}
 
 public class SourceGraphField extends AbstractGraphField implements MouseListener, MouseMotionListener {
 
@@ -23,15 +47,24 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
             points.put(i, new ActiveVertex(this, i, r.nextInt(600 - VERTEX_D) + VERTEX_R, r.nextInt(500 - VERTEX_D) + VERTEX_R, graph));
             add(points.get(i));
         }
+
+/*
+        MyCircle myCircle1 = new MyCircle(this, 0, 0);
+        MyCircle myCircle2 = new MyCircle(this,150, 250);
+        this.add(myCircle1);
+        this.add(myCircle2);
+
+ */
     }
 
 
 
     @Override
     public void paint(Graphics g) {
+
         g.setColor(new Color(255,255,255));
         g.fillRect(0,0, 900,600);
-
+        super.paint(g); // чтобы все компоненты этой панели отрисовались сами
         if (points.size() > graph.VertexList().size()) {
             int k = points.size();
             for (int i = 0; i < k; i++) {
@@ -49,11 +82,11 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
             }
 
         }
-
         drawGraph(g, points);
 
-
     }
+
+
 
 
 

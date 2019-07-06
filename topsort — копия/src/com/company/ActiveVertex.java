@@ -5,55 +5,78 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Random;
 import java.util.Stack;
+import java.util.Vector;
 
 import static com.company.PAR_S.*;
 
-public class ActiveVertex extends JPanel implements MouseListener, MouseMotionListener {
+public class ActiveVertex extends JComponent implements MouseListener, MouseMotionListener {
     Graph graph;
-    JPanel parent;
+    private JPanel parent;
     Point point;
     final int v;
-    static Stack<ActiveVertex> stack = new Stack<>();
-
+    private static Stack<ActiveVertex> stack = new Stack<>();
     private Point mouse = new Point();
-
     private boolean flagCanMove = false;
+    private Vector<AbstractEdgeComponent> edges = new Vector<>();
+
+    public void addEdge(AbstractEdgeComponent edgeComponent) {
+        edges.add(edgeComponent);
+    }
 
 
-    ActiveVertex( JPanel parent, int v, int x, int y, Graph graph ) {
+    ActiveVertex(JPanel parent, int v, int x, int y, Graph graph) {
         this.graph = graph;
         this.parent = parent;
         this.v = v;
+        this.point = new Point(x, y);
 
-       // Random random = new Random();
-        point = new Point(x, y);
-
-        setSize(new Dimension( VERTEX_D, VERTEX_D));
-        setLocation(point.x- VERTEX_R, point.y- VERTEX_R);
-
-        addMouseMotionListener(this);
-        addMouseListener(this);
+        this.setSize(new Dimension( VERTEX_D + 2, VERTEX_D + 2)); // круг слегка не влезает в размеры, видимо из-за округления
+        this.setLocation(point.x - VERTEX_R, point.y - VERTEX_R);
+        this.addMouseMotionListener(this);
+        this.addMouseListener(this);
     }
+
+    @Override
+    public void paintComponent(Graphics g){
+        drawVertex(g);
+        parent.repaint();
+    }
+
+    private void drawVertex(Graphics g) {
+        g.setColor(BASE_VERTEX_COLOR);
+        g.fillOval(0, 0, VERTEX_D, VERTEX_D);
+        g.setColor( CIRCLE_BORDERLINE_COLOR );
+        g.drawOval(0, 0, VERTEX_D, VERTEX_D);
+        g.setColor(TEXT_COLOR);
+        Font font = new Font("Default", Font.PLAIN, TEXT_SIZE);  //Шрифт
+        g.setFont(font);
+        FontMetrics fm = g.getFontMetrics(font);
+        g.drawString(Integer.toString(v),
+                VERTEX_R - fm.stringWidth(Integer.toString(v))/2,
+                VERTEX_R + fm.getAscent()/2);
+    }
+
 
     // Движение вершины
     @Override
     public void mousePressed(MouseEvent e) {
         System.out.println(mouse.x+" "+mouse.y);
+        if (Math.pow(VERTEX_R - e.getX(), 2) + Math.pow(VERTEX_R - e.getY(), 2) < Math.pow(VERTEX_R, 2))
         flagCanMove = true;
-        mouse.x = e.getX();
-        mouse.y = e.getY();
+        mouse = e.getPoint();
     }
     @Override
     public void mouseReleased(MouseEvent e) {
         flagCanMove = false;
     }
+
+
     @Override
     public void mouseDragged(MouseEvent e) {
         if (flagCanMove) {
             int dx = e.getX() - mouse.x;
-            int dy = e.getY() - mouse.y;
+            int dy = e.getY() - mouse.y; 
 
             int x = point.x + dx;
             if (x- VERTEX_R < 0) point.x = VERTEX_R;
@@ -66,16 +89,14 @@ public class ActiveVertex extends JPanel implements MouseListener, MouseMotionLi
             else point.y = y;
 
             setLocation(point.x- VERTEX_R, point.y- VERTEX_R);
-            parent.repaint();
+            for (AbstractEdgeComponent edgeComponent: edges){
+                edgeComponent.repaint();
+            }
+            this.repaint();
+            //parent.repaint();
         }
     }
 
-
-    ///////////////////////////////////////////
-    ///////////////////////////////////////////
-    ///////////////////////////////////////////
-    ///////////////////////////////////////////
-    // Мусорка безполезных функций
     @Override
     public void mouseClicked(MouseEvent e) {
         System.out.println("mouse clicked");

@@ -1,10 +1,13 @@
 package com.company;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 import static com.company.PAR_S.*;
+
+
 
 public class SortedGraphField extends AbstractGraphField  {
     private HashMap<Integer, ActiveVertex> sort_points = new HashMap<>();
@@ -24,6 +27,8 @@ public class SortedGraphField extends AbstractGraphField  {
             sort_points.put(sorted.get(i), new ActiveVertex(this, i, i * 100,
                     this.getPreferredSize().height / 2, graph));
         }
+
+
     }
 
     public void setGraph(Graph graph) {
