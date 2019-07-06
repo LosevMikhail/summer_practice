@@ -14,26 +14,23 @@ public class RightControlPanel extends JPanel {
     //AbstractGraphField graphField;
     private String input = new String();
     private Graph graph;
-    private TopSort topSort;
     private JPanel parent;
     private SourceGraphField graphField;
-    
+    private SortedGraphField sortedGraphField;
 
-    public RightControlPanel(Graph graph, JPanel parent, SourceGraphField graphField ) {
-
+    public RightControlPanel(Graph graph, JPanel parent, SourceGraphField graphField, SortedGraphField sortedGraphField ) {
         this.graphField = graphField;
+        this.sortedGraphField = sortedGraphField;
         this.parent = parent;
         this.graph = graph;
-        //this.topSort = topSort;
+
         this.setLayout(null);
         this.setPreferredSize(new Dimension(630,700));
         //this.setBackground(Color.BLUE);
 
         JLabel textFieldLabel = new JLabel("Enter data:", SwingConstants.CENTER);
-        //JTextPane textField = new JTextPane();
         JTextPane textArea = new JTextPane();
         JButton addEdge = new JButton("add edge");
-        //JButton CreateGraph = new JButton("make graph");
         JButton step = new JButton("next step");
         JButton runAlg = new JButton("run alg");
         JButton readFromFile = new JButton("read form file");
@@ -58,6 +55,7 @@ public class RightControlPanel extends JPanel {
 
         step.setLocation(textArea.getX(), this.getPreferredSize().height - step.getHeight() - 10);
         runAlg.setLocation(textArea.getX() + step.getWidth() + 10, this.getPreferredSize().height - step.getHeight() - 10);
+
         this.add(textFieldLabel);
         this.add(addEdge);
         this.add(step);
@@ -119,7 +117,8 @@ public class RightControlPanel extends JPanel {
 
     private void foo() {
         System.out.println("foo called");
-
+        this.sortedGraphField.setGraph(graph);
+        this.sortedGraphField.repaint();
 
     }
 

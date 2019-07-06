@@ -33,9 +33,7 @@ public class TopSort {
         }
         stack.push(pos);
     }
-
-    void Alg(Graph g){
-        graph = g;
+    void alg() {
         init();
         for(int i = 0;i<V;i++){
             if(!used[i]) {
@@ -48,5 +46,9 @@ public class TopSort {
             System.out.println(stack.peek());
             stack.pop();
         }
+    }
+    void alg(Graph g){
+        graph = g;
+        alg();
     }
 }

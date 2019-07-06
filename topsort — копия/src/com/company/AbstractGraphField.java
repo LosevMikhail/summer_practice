@@ -20,28 +20,21 @@ public abstract class AbstractGraphField extends JPanel  {
     }
 
 
-    // Отрисовка графа
-
-
-    //Отрисовка ребра
-    //protected abstract void drawGraph(Graphics g, HashMap<Integer, ActiveVertex> points);
     protected void drawGraph(Graphics g, HashMap<Integer, ActiveVertex> points) {
         Edge edge;
 
         ActiveVertex i;
         int av = 0;
-        for (int w=0; w < points.size(); w++) {
+        for (int w = 0; w < points.size(); w++) {
 
             for ( ; !points.containsKey(av); av++) {};
             i = points.get(av);
             av++;
 
             // boolean inRes = graph.checkV(i.v)!=null ? true : false;
-            for (int j = 0; j < graph.V()+1; j++) {
-                if ( ( edge = graph.checkE(i.v,j)) != null ) {
+            for (int j = 0; j < graph.V() + 1; j++) {
+                if ( ( edge = graph.checkE(i.v, j)) != null ) {
                     Color color;
-                    //if (inRes && (graph.checkE(i.v,j)!= null) ) color = RESULT_EDGE_COLOR;
-                    //else
                     color = BASE_EDGE_COLOR;
                     drawEdge(g, edge, color, points);
                 }
@@ -52,7 +45,7 @@ public abstract class AbstractGraphField extends JPanel  {
     }
     protected abstract void drawEdge(Graphics g, Edge edge, Color color,HashMap<Integer, ActiveVertex> points);
 
-        /*
+    /*
         if(!flag) {
             g.drawLine(v1.x, v1.y, v2.x, v2.y);
             drawArrow(g, v1, v2);
@@ -70,11 +63,9 @@ public abstract class AbstractGraphField extends JPanel  {
 
          */
 
-
-
     abstract void drawArrow(Graphics g, Point source, Point drain);
 
-    // Отрисовка вершины
+
 
 
 
@@ -83,7 +74,6 @@ public abstract class AbstractGraphField extends JPanel  {
         drawInt(g, points.get(v).point.x, points.get(v).point.y, v);
     }
 
-    // Пишет text в точку (x,y)
     private void drawInt(Graphics g, int x, int y, int text) {
         g.setColor(TEXT_COLOR);
         Font font = new Font("Default", Font.PLAIN, TEXT_SIZE);  //Шрифт

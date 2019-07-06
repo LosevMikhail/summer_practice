@@ -21,7 +21,8 @@ public class Window extends JPanel{
     Graph graph;
     TopSort sort;
     private boolean flag = false;
-    public AbstractGraphField graphField;
+    public SourceGraphField graphField;
+    public SortedGraphField sortedGraphField;
     ///////////////////////////////
 
     public Window(Graph graph, TopSort sort) {
@@ -44,19 +45,18 @@ public class Window extends JPanel{
         LeftControlPanel leftPanel = new LeftControlPanel();
 
         constraints.fill = GridBagConstraints.HORIZONTAL;
-
         constraints.weighty   = 0.3;
-
         constraints.gridx     = 0;
         constraints.gridy     = 1;
-        contentPanel.add(new SortedGraphField(graph), constraints);
+        sortedGraphField = new SortedGraphField(graph);
+        contentPanel.add(sortedGraphField, constraints);
 
         constraints.weighty   = 0.0;
         constraints.gridx     = 0;
         constraints.gridy     = 2;
         contentPanel.add(leftPanel, constraints);
 
-        RightControlPanel cp  = new RightControlPanel(this.graph, contentPanel, graphField);
+        RightControlPanel cp  = new RightControlPanel(this.graph, contentPanel, graphField, sortedGraphField);
         constraints.gridx = 1;      // первая ячейка таблицы по горизонтали
         constraints.gridy = 0;
         constraints.gridheight = 3;

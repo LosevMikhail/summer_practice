@@ -15,21 +15,26 @@ public class SortedGraphField extends AbstractGraphField  {
     public SortedGraphField(Graph graph) {
         super(graph);
         setPreferredSize(new Dimension(900, 150));
-    }
 
-    public SortedGraphField(Graph graph, TopSort sort) {
-        super(graph);
-        this.sort = sort;
-        sort.Alg(graph);
-
+        sort = new TopSort(graph);
+        sort.alg();
         LinkedList<Integer> sorted = sort.ans;
 
         for (int i = 0; i < sort.ans.size(); i++) {
             sort_points.put(sorted.get(i), new ActiveVertex(this, i, i * 100,
                     this.getPreferredSize().height / 2, graph));
         }
+    }
 
-        //drawGraph(g, sort_points);
+    public void setGraph(Graph graph) {
+        this.graph = graph;
+        sort.alg();
+        LinkedList<Integer> sorted = sort.ans;
+
+        for (int i = 0; i < sort.ans.size(); i++) {
+            sort_points.put(sorted.get(i), new ActiveVertex(this, i, i * 100 + VERTEX_D,
+                    this.getPreferredSize().height / 2, graph));
+        }
     }
 
     @Override
@@ -40,32 +45,25 @@ public class SortedGraphField extends AbstractGraphField  {
         drawGraph(g, sort_points);
     }
 
-
-
-
-    public void setSort(TopSort sort) {
-        this.sort = sort;
-    }
-
     @Override
     protected void drawEdge(Graphics g, Edge edge, Color color, HashMap<Integer, ActiveVertex> points) {
         Point v1 = new Point(points.get(edge.v1).point.x, points.get(edge.v1).point.y);
         Point v2 = new Point(points.get(edge.v2).point.x, points.get(edge.v2).point.y);
-
         ((Graphics2D)g).setStroke( EDGE_LINE_THIKNESS );  // Устанавливаем толщину ребра
+        g.setColor( Color.BLACK );
 
-        if(z %2 == 0) {
+        if(z % 2 == 0) {
             g.drawArc(v1.x, 500, v2.x - v1.x, 100, 0, 180);
-            z++;
         }
         else {
             g.drawArc(v1.x, 500, v2.x - v1.x, 100, 0, -180);
-            z++;
         }
+        z++;
+        drawArrow(g, v1, v2);
     }
 
     @Override
     void drawArrow(Graphics g, Point source, Point drain) {
-
+        // TODO: implement
     }
 }

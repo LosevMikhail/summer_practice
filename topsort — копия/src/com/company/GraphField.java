@@ -107,7 +107,7 @@ public class GraphField extends JPanel implements MouseListener, MouseMotionList
                 //g.drawRect(0, 0, 900, 600);
 
                 drawGraph(g, sort_points);
-                sort.Alg(graph);
+                sort.alg(graph);
                 int x = 100;
                 LinkedList<Integer> l = sort.ans;
                 for (int i = 0; i < sort.ans.size(); i++) {

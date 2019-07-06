@@ -49,6 +49,7 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
             }
 
         }
+
         drawGraph(g, points);
 
 
@@ -63,7 +64,6 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
         ((Graphics2D)g).setStroke( EDGE_LINE_THIKNESS );  // Устанавливаем толщину ребра
         g.setColor( EDGE_LINE_COLOR );
 
-        drawArrow(g, v1, v2);
 
         g.drawLine(v1.x, v1.y, v2.x, v2.y);
         drawArrow(g, v1, v2);
