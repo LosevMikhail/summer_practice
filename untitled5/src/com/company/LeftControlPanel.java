@@ -21,7 +21,7 @@ public class LeftControlPanel extends JPanel {
         commentsLabel.setLocation(0, addEdgeButton.getHeight() + 20);
         commentsLabel.setOpaque(true);
         commentsLabel.setBackground(new Color(192, 192, 192));
-        
+
 
         this.add(addEdgeButton);
         this.add(commentsLabel);

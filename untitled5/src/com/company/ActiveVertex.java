@@ -6,27 +6,29 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Random;
+import java.util.Stack;
 
 import static com.company.PAR_S.*;
 
 public class ActiveVertex extends JPanel implements MouseListener, MouseMotionListener {
-
+    Graph graph;
     JPanel parent;
     Point point;
     final int v;
+    Stack<ActiveVertex> stack;
 
     private Point mouse = new Point();
 
     private boolean flagCanMove = false;
 
 
-    ActiveVertex( JPanel parent, int v ) {
+    ActiveVertex( JPanel parent, int v, int x, int y, Graph graph ) {
+        this.graph = graph;
         this.parent = parent;
         this.v = v;
 
-        Random random = new Random();
-        point = new Point(random.nextInt(600- VERTEX_D)+ VERTEX_R,
-                random.nextInt(500- VERTEX_D)+ VERTEX_R);
+       // Random random = new Random();
+        point = new Point(x, y);
 
         setSize(new Dimension( VERTEX_D, VERTEX_D));
         setLocation(point.x- VERTEX_R, point.y- VERTEX_R);
@@ -76,6 +78,7 @@ public class ActiveVertex extends JPanel implements MouseListener, MouseMotionLi
     // Мусорка безполезных функций
     @Override
     public void mouseClicked(MouseEvent e) {
+
     }
     @Override
     public void mouseEntered(MouseEvent e) {

@@ -38,8 +38,9 @@ public class TopSort {
         graph = g;
         init();
         for(int i = 0;i<V;i++){
-            if(!used[i])
+            if(!used[i]) {
                 DFS(i);
+            }
         }
         int k = stack.size();
         for(int i = 0;i<k;i++) {

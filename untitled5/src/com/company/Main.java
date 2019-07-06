@@ -16,8 +16,8 @@ public class Main extends JFrame {
     Main(Graph g, TopSort sort){
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        setTitle("Алгоритм Яника-Прима-Дейкстры");      //Имя окна
-        setSize( WINDOW_SIZE );                            //Размер окна
+        setTitle("TopSort");      //Имя окна
+        setSize( 1550, 800);                            //Размер окна
 
         setResizable(false);
 

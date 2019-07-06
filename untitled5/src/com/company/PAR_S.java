@@ -7,7 +7,7 @@ public class PAR_S {
     public final static Dimension WINDOW_SIZE = new Dimension(1400, 700);
     public final static Dimension CREATE_GRAPH_PANEL_SIZE = new Dimension(300,200);
     public final static Dimension SIZE_OF_INPUT_FIELD = new Dimension(25,19);
-    public final static Dimension SIZE_OF_GRAPH_FIELD = new Dimension(750,550);
+    public final static Dimension SIZE_OF_GRAPH_FIELD = new Dimension(600,500);
 
     // Цвета
     public final static Color TEXT_COLOR = Color.BLACK;
