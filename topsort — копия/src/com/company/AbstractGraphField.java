@@ -12,47 +12,20 @@ import static com.company.PAR_S.*;
 public abstract class AbstractGraphField extends JPanel  {
     private int z = 0;
     protected HashMap<Integer, ActiveVertex> points = new HashMap<>();
-    protected HashMap<Integer, ActiveVertex> sort_points = new HashMap<>();
     protected Graph graph;
 
     AbstractGraphField(Graph graph) {
         setLayout(null);
-        setPreferredSize(new Dimension(900, 600));
-
         this.graph = graph;
-
-
-
     }
 
-    @Override
-    public void paint(Graphics g) {
-        g.setColor(new Color(255,255,255));
-        g.fillRect(0,0, 900,600);
-        if (points.size() > graph.VertexList().size()) {
-            int k = points.size();
-            for (int i = 0; i < k; i++) {
-                if (!graph.VertexList().contains(i)) {
-                    points.remove(i);
-                }
-            }
-        }
-        for (int i = 0; i < graph.VertexList().size(); i++) {
-            Random r = new Random();
-            if (!points.containsKey(i)) {
-                points.put(i, new ActiveVertex(this, i, r.nextInt(600 - VERTEX_D) + VERTEX_R, r.nextInt(500 - VERTEX_D) + VERTEX_R, graph));
-                add(points.get(i));
-            }
-
-        }
-        drawGraph(g, points);
-    }
 
     // Отрисовка графа
 
 
     //Отрисовка ребра
-    protected void drawGraph(Graphics g,HashMap<Integer, ActiveVertex> points) {
+    //protected abstract void drawGraph(Graphics g, HashMap<Integer, ActiveVertex> points);
+    protected void drawGraph(Graphics g, HashMap<Integer, ActiveVertex> points) {
         Edge edge;
 
         ActiveVertex i;
@@ -105,7 +78,7 @@ public abstract class AbstractGraphField extends JPanel  {
 
 
 
-    private void drawVertex(Graphics g, int v, HashMap<Integer, ActiveVertex> points) {
+    protected void drawVertex(Graphics g, int v, HashMap<Integer, ActiveVertex> points) {
         drawCircle(g, points.get(v).point.x,  points.get(v).point.y, VERTEX_R);
         drawInt(g, points.get(v).point.x, points.get(v).point.y, v);
     }

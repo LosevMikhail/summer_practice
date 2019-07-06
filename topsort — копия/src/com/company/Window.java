@@ -21,42 +21,48 @@ public class Window extends JPanel{
     Graph graph;
     TopSort sort;
     private boolean flag = false;
-    private AbstractGraphField graphField;
+    public AbstractGraphField graphField;
     ///////////////////////////////
 
     public Window(Graph graph, TopSort sort) {
         this.sort = sort;
         this.graph = graph;
-        graphField = new SourсeGraphField(graph);
+        graphField = new SourceGraphField(graph);
+                //new SourceGraphField(graph);
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 0.5;
+        constraints.weighty   = 0.3;
+        constraints.gridheight = 1;
         constraints.gridy   = 0  ;
         constraints.gridx = 0;
         contentPanel.add(graphField, constraints);
-
 
         LeftControlPanel leftPanel = new LeftControlPanel();
 
         constraints.fill = GridBagConstraints.HORIZONTAL;
 
-        constraints.weightx   = 0.0;
-        constraints.gridwidth = 1;
+        constraints.weighty   = 0.3;
+
         constraints.gridx     = 0;
         constraints.gridy     = 1;
+        contentPanel.add(new SortedGraphField(graph), constraints);
+
+        constraints.weighty   = 0.0;
+        constraints.gridx     = 0;
+        constraints.gridy     = 2;
         contentPanel.add(leftPanel, constraints);
 
-        RigthControlPanel cp  = new RigthControlPanel(this.graph, graphField);
+        RightControlPanel cp  = new RightControlPanel(this.graph, contentPanel, graphField);
         constraints.gridx = 1;      // первая ячейка таблицы по горизонтали
         constraints.gridy = 0;
-        constraints.gridheight = 2;
+        constraints.gridheight = 3;
         contentPanel.add(cp, constraints);
 
-
-        add(contentPanel);
+        this.add(contentPanel);
     }
 
 
