@@ -12,15 +12,11 @@ public class TopSort {
     public LinkedList<Integer> ans = new LinkedList<>();
     public TopSort(Graph g){
         graph = g;
-        init();
-    }
-
-    void init(){
-        V = graph.V();
-        E = graph.E();
-        used = new boolean[graph.VertexList().size()+1];
+        V = g.V();
+        E = g.E();
+        used = new boolean[V+1];
         stack = new Stack<>();
-        for(int i = 0;i<graph.VertexList().size()+1;i++)
+        for(int i = 0;i<V+1;i++)
             used[i] = false;
     }
 
@@ -33,14 +29,11 @@ public class TopSort {
         }
         stack.push(pos);
     }
-    void alg() {
-        init();
-        stack.clear();
-        ans.clear();
-        for(int i = 0;i<graph.VertexList().size();i++){
-            if(!used[graph.VertexList().get(i)]) {
-                DFS(graph.VertexList().get(i));
-            }
+
+    void Alg(){
+        for(int i = 0;i<V;i++){
+            if(!used[i])
+                DFS(i);
         }
         int k = stack.size();
         for(int i = 0;i<k;i++) {
@@ -48,9 +41,5 @@ public class TopSort {
             System.out.println(stack.peek());
             stack.pop();
         }
-    }
-    void alg(Graph g){
-        graph = g;
-        alg();
     }
 }
