@@ -5,96 +5,110 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseAdapter;
-import java.util.Random;
+import java.util.Stack;
 
-import static com.company.PAR_S.VERTEX_R;
+import static com.company.PAR_S.*;
 
-public class ActiveVertex extends JFrame implements MouseListener, MouseMotionListener {
-        static int i = 0;
-        JFrame parent;
-        Point point;
-        final int v;
-        final static int VERTEX_R = 25;
-        final static int VERTEX_D = VERTEX_R*2;
-        private Point mouse = new Point();
-
-        private boolean flagCanMove = false;
+public class ActiveVertex extends JComponent implements MouseListener, MouseMotionListener {
+    Graph graph;
+    private JPanel parent;
+    Point point;
+    final int v;
+    private static Stack<ActiveVertex> stack = new Stack<>();
+    private Point mouse = new Point();
+    private boolean flagCanMove = false;
 
 
-        ActiveVertex( JFrame parent, int v, int x, int y ) {
-            this.parent = parent;
-            this.v = v;
+    ActiveVertex(JPanel parent, int v, int x, int y, Graph graph) {
+        this.graph = graph;
+        this.parent = parent;
+        this.v = v;
+        this.point = new Point(x, y);
 
-            //Random random = new Random();
-         //   point = new Point(random.nextInt(600 - VERTEX_D)+ VERTEX_R,
-            //        random.nextInt(500- VERTEX_D)+ VERTEX_R);
-            point = new Point(x, y);
+        this.setSize(new Dimension( VERTEX_D + 2, VERTEX_D + 2)); // круг слегка не влезает в размеры, видимо из-за округления
+        this.setLocation(point.x - VERTEX_R, point.y - VERTEX_R);
+        this.addMouseMotionListener(this);
+        this.addMouseListener(this);
+    }
 
-            setSize(new Dimension( VERTEX_D, VERTEX_D));
+    @Override
+    public void paintComponent(Graphics g){
+        drawVertex(g);
+        parent.repaint();
+    }
+
+    private void drawVertex(Graphics g) {
+        g.setColor(BASE_VERTEX_COLOR);
+        g.fillOval(0, 0, VERTEX_D, VERTEX_D);
+        g.setColor( CIRCLE_BORDERLINE_COLOR );
+        ((Graphics2D)g).setStroke( VERTEX_LINE );
+        g.drawOval(0, 0, VERTEX_D, VERTEX_D);
+        g.setColor(TEXT_COLOR);
+        Font font = new Font("Default", Font.PLAIN, TEXT_SIZE);  //Шрифт
+        g.setFont(font);
+        FontMetrics fm = g.getFontMetrics(font);
+        g.drawString(Integer.toString(v),
+                VERTEX_R - fm.stringWidth(Integer.toString(v))/2,
+                VERTEX_R + fm.getAscent()/2);
+    }
+
+    // Движение вершины
+    @Override
+    public void mousePressed(MouseEvent e) {
+        System.out.println(mouse.x+" "+mouse.y);
+        if (Math.pow(VERTEX_R - e.getX(), 2) + Math.pow(VERTEX_R - e.getY(), 2) < Math.pow(VERTEX_R, 2))
+        flagCanMove = true;
+        mouse = e.getPoint();
+    }
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        flagCanMove = false;
+    }
+
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (flagCanMove && parent instanceof SourceGraphField) {
+            int dx = e.getX() - mouse.x;
+            int dy = e.getY() - mouse.y;
+
+            int x = point.x + dx;
+            if (x- VERTEX_R < 0) point.x = VERTEX_R;
+            else if (x+ VERTEX_R>900) point.x = 900- VERTEX_R;
+            else point.x = x;
+
+            int y = point.y + dy;
+            if (y- VERTEX_R < 0) point.y = VERTEX_R;
+            else if (y+ VERTEX_R>500) point.y = 500- VERTEX_R;
+            else point.y = y;
+
             setLocation(point.x- VERTEX_R, point.y- VERTEX_R);
-            parent.addMouseMotionListener(this);
-            parent.addMouseListener(this);
         }
+    }
 
-        // Движение вершины
-        @Override
-        public void mousePressed(MouseEvent e) {
-            System.out.println("mouse pressed");
-            if ((point.x - e.getX()) * (point.x - e.getX()) + (point.y - e.getY()) * (point.y - e.getY()) < VERTEX_R * VERTEX_R) {
-                flagCanMove = true;
-                mouse.x = e.getX();
-                mouse.y = e.getY();
-            }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        System.out.println("mouse clicked");
+        stack.push(this);
+        if(stack.size()==2) {
+            int k = stack.peek().v;
+            System.out.println(k);
+            stack.pop();
+            System.out.println(stack.peek());
+            graph.addE(stack.peek().v, k);
+            stack.pop();
+            parent.repaint();
         }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            flagCanMove = false;
-            System.out.println("mouse released");
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            if (flagCanMove) {
-                int dx = e.getX() - point.x;
-                int dy = e.getY() - point.y;
-
-                int x = point.x + dx;
-                if (x- VERTEX_R < 0) point.x = VERTEX_R;
-                else if (x+ VERTEX_R>600) point.x = 600- VERTEX_R;
-                else point.x = x;
-
-                int y = point.y + dy;
-                if (y- VERTEX_R < 0) point.y = VERTEX_R;
-                else if (y+ VERTEX_R>500) point.y = 500- VERTEX_R;
-                else point.y = y;
-
-                setLocation(point.x- VERTEX_R, point.y- VERTEX_R);
-                parent.repaint(point.x - VERTEX_R, point.y - VERTEX_R, VERTEX_D, VERTEX_D);
-            }
-        }
-
-        public void mouseClicked(MouseEvent e) {
-            System.out.println(i);
-            i++;
-        }
-        public void mouseEntered(MouseEvent e) {
-        }
-        public void mouseExited(MouseEvent e) {
-        }
-        public void mouseMoved(MouseEvent e) {
-
-        }
-/*
-        public void paint() {
-            parent.drawCircle(g, points.get(v).point.x, points.get(v).point.y, VERTEX_R);
-            parent.drawInt(g, points.get(v).point.x, points.get(v).point.y, v);
-        }
-
-
- */
-
+    }
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
+    @Override
+    public void mouseMoved(MouseEvent e) {
 
     }
+}

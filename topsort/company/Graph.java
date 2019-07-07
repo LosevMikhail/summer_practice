@@ -31,16 +31,10 @@ public class Graph {
         ECount++;
     }
 
-    public  void clear(){
-        graph.clear();
-        VCount = ECount = 0;
-        vertexes.clear();
-    }
-
     public void removeV(int v){
         if(graph.containsKey(v)) {
             graph.remove(v);
-            vertexes.remove((Integer)v);
+            vertexes.remove(new Integer(v));
             for (Map.Entry<Integer, Vertex> k :
                     graph.entrySet()) {
                 if (k.getValue().way.contains(v)) {
