@@ -91,13 +91,20 @@ public class ActiveVertex extends JComponent implements MouseListener, MouseMoti
     public void mouseClicked(MouseEvent e) {
         System.out.println("mouse clicked");
         stack.push(this);
-        if(stack.size()==2) {
+        if(stack.size() == 2) {
             int k = stack.peek().v;
             System.out.println(k);
             stack.pop();
             System.out.println(stack.peek());
-            graph.addE(stack.peek().v, k);
-            stack.pop();
+            if (k != stack.peek().v) {
+                graph.addE(stack.peek().v, k);
+                stack.pop();
+            }
+            if (e.getClickCount() == 2) {
+                parent.remove(this);
+                graph.removeV(k);
+            }
+
             parent.repaint();
         }
     }
