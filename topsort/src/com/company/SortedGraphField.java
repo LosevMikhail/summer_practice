@@ -45,18 +45,26 @@ public class SortedGraphField extends AbstractGraphField  {
     public void paint(Graphics g) {
         g.setColor(new Color(0,255,0));
         g.fillRect(0,0, 900,600);
-
-        drawGraph(g, sort_points);
         super.paint(g); // чтобы все компоненты этой панели отрисовались сами
+        drawGraph(g, sort_points);
+        z = 0;
+    }
+    @Override
+    protected void drawGraph(Graphics g, HashMap<Integer, ActiveVertex> points) {
+        super.drawGraph(g, points);
+        h  = 20;
     }
 
     @Override
     protected void drawEdge(Graphics g, Edge edge, Color color, HashMap<Integer, ActiveVertex> points) {
-
         Point v1 = new Point(points.get(edge.v1).point.x, points.get(edge.v1).point.y);
         Point v2 = new Point(points.get(edge.v2).point.x, points.get(edge.v2).point.y);
         ((Graphics2D)g).setStroke( EDGE_LINE_THIKNESS );  // Устанавливаем толщину ребра
         g.setColor( Color.BLACK );
+        //g.drawLine(v1.x, v1.y, v2.x, v2.y);
+
+        //g.drawArc(v1.x, this.getPreferredSize().height / 2 - VERTEX_R, Math.abs(v1.x - v2.x), h, 0, 180);
+
         if(z%2==0) {
             g.drawArc(v1.x, this.getPreferredSize().height / 2 - VERTEX_R, Math.abs(v1.x - v2.x), h, 0, 180);
             h+=5;
