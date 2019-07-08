@@ -32,6 +32,7 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
     public void paint(Graphics g) {
         g.setColor(new Color(255,255,255));
         g.fillRect(0,0, 900,600);
+        //добавление вершин в мапу вершин
         for (int i = 0; i < graph.VertexList().size(); i++) {
             Random r = new Random();
             if (!points.containsKey(graph.VertexList().get(i))) {
@@ -39,11 +40,13 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
                 add(points.get(graph.VertexList().get(i)));
             }
         }
+        //если удалили в графе вершину, то и из мапы даляем, чтоб не рисовалась
         while(points.size()>graph.VertexList().size())
             if (points.size() > graph.VertexList().size()) {
                 for (Map.Entry<Integer, ActiveVertex> k:
                         points.entrySet()) {
                     if(!graph.VertexList().contains(k.getValue().v)) {
+                        this.remove(points.get(k.getKey()));
                         points.remove(k.getKey());
                         break;
                     }
@@ -101,6 +104,7 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
     }
 
 
+
     @Override
     public void mousePressed(MouseEvent e) {
 
@@ -123,13 +127,22 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
         return max;
     }
 
+    boolean onEdge(int x, int y){
+    return true;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
-        int x = max(graph) + 1;
-        graph.addV(x);
-        points.put(x, new ActiveVertex(this,x, e.getX(), e.getY(), graph));
-        add(points.get(x));
-        repaint();
+        //int x = e.getX();
+        //int y = e.getY();
+
+            int x = max(graph) + 1;
+            graph.addV(x);
+            points.put(x, new ActiveVertex(this, x, e.getX(), e.getY(), graph));
+            add(points.get(x));
+            repaint();
+
+
     }
 
     @Override

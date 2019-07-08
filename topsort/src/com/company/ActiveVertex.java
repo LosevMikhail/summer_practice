@@ -5,8 +5,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.Stack;
 
 import static com.company.PAR_S.*;
@@ -70,52 +68,24 @@ public class ActiveVertex extends JPanel implements MouseListener, MouseMotionLi
             parent.repaint();
         }
     }
-    @Override
-    public void paintComponent(Graphics g) {
-        drawVertex(g);
-        parent.repaint(this.getBounds());
 
-    }
 
-    protected void drawVertex(Graphics g) {
-        drawCircle(g, VERTEX_R, VERTEX_R, VERTEX_R);
-        drawInt(g, VERTEX_R, VERTEX_R, v);
-    }
-
-    private void drawInt(Graphics g, int x, int y, int text) {
-        g.setColor(TEXT_COLOR);
-        Font font = new Font("Default", Font.PLAIN, TEXT_SIZE);  //Шрифт
-
-        g.setFont(font);
-
-        FontMetrics fm = g.getFontMetrics(font);
-
-        g.drawString(Integer.toString(text),
-                x-fm.stringWidth(Integer.toString(text))/2,
-                y+fm.getAscent()/2);
-    }
-
-    private void drawCircle(Graphics g, int cX, int cY, int rad) {
-        g.fillOval(cX-rad, cY-rad, rad*2, rad*2);
-
-        ((Graphics2D)g).setStroke(new BasicStroke(2));
-        g.setColor( CIRCLE_BORDERLINE_COLOR );
-        g.drawOval(cX-rad, cY-rad, rad*2, rad*2);
-    }
-
+    ///////////////////////////////////////////
+    ///////////////////////////////////////////
+    ///////////////////////////////////////////
+    ///////////////////////////////////////////
+    // Мусорка безполезных функций
     @Override
     public void mouseClicked(MouseEvent e) {
         stack.push(this);
         if(stack.size()==2) {
             int k = stack.peek().v;
             stack.pop();
-
             if (k == stack.peek().v) {
                 graph.removeV(stack.peek().v);
                 stack.pop();
                 parent.repaint();
             } else {
-
                 graph.addE(stack.peek().v, k);
                 stack.pop();
                 parent.repaint();

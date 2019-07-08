@@ -1,7 +1,7 @@
 package com.company;
 
 import java.awt.*;
-
+import java.util.Comparator;
 import java.util.LinkedList;
 
 import static com.company.PAR_S.*;

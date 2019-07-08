@@ -122,7 +122,7 @@ public class RigthControlPanel extends JPanel {
                         // читаем из файла построчно
                         String line;
                         while ((line = reader.readLine()) != null) {
-                            input+=line+' ';
+                            input+=line+"\n";
                         }
                         textArea.setText(input);
                     }
@@ -135,6 +135,8 @@ public class RigthControlPanel extends JPanel {
         runAlg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                doAllTheSteps();
+
                 foo();
             }
         });
@@ -144,6 +146,15 @@ public class RigthControlPanel extends JPanel {
         System.out.println("foo called");
         this.sortedGraphField.setGraph(graph);
         this.sortedGraphField.repaint();
+
+    }
+
+    private void doAllTheSteps() {
+        TopSort topSort = new TopSort(graph);
+        topSort.doAllSteps();
+
+        //this.sortedGraphField.setGraph(graph);
+        //this.sortedGraphField.repaint();
 
     }
 

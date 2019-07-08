@@ -2,18 +2,13 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-
-
-import static com.company.PAR_S.*;
 
 public class Window extends JPanel{
-    private Graph graph;
-    private TopSort sort;
-    private boolean flag = false;
-    private SourceGraphField graphField;
-    private SortedGraphField sortedGraphField;
-
+    Graph graph;
+    TopSort sort;
+    public SourceGraphField graphField;
+    public SortedGraphField sortedGraphField;
+    ///////////////////////////////
 
     public Window(Graph graph, TopSort sort) {
         this.sort = sort;
@@ -40,7 +35,10 @@ public class Window extends JPanel{
         constraints.gridy     = 1;
         sortedGraphField = new SortedGraphField(graph);
         contentPanel.add(sortedGraphField, constraints);
-
+        JScrollPane jScrollPane = new JScrollPane(sortedGraphField);
+        jScrollPane.setPreferredSize(new Dimension(900,150));
+        jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        contentPanel.add(sortedGraphField, constraints);;
         constraints.weighty   = 0.0;
         constraints.gridx     = 0;
         constraints.gridy     = 2;
