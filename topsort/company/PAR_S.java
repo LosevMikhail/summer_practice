@@ -18,7 +18,7 @@ public class PAR_S {
     public final static Color EDGE_CIRKLE_LINE_COLOR = new Color(0, 0, 0);
     public final static Color CREATE_BUTTONS_BG = new Color(127, 186, 189);
     public final static Color RESULT_EDGE_COLOR = new Color(203, 138, 82);
-    public final static Color BASE_VERTEX_COLOR = new Color(255, 255, 255);
+    public final static Color BASE_VERTEX_COLOR = new Color(201, 158, 123);
     public final static Color CIRCLE_BORDERLINE_COLOR = new Color(0, 0, 0);
     public final static Color GRAPH_FIELD_BORDER = new Color(225, 219, 180);
     public final static Color RESULT_VERTEX_COLOR = new Color(163, 98, 80);
@@ -31,6 +31,6 @@ public class PAR_S {
     public final static int VERTEX_D = VERTEX_R*2;
 
     // Размеры линий
-    public final static BasicStroke EDGE_LINE_THIKNESS = new BasicStroke(1);
-    public final static BasicStroke EDGE_CIRKLE_LINE_THKNESS = new BasicStroke(1);
+    public final static BasicStroke EDGE_LINE_THIKNESS = new BasicStroke(3);
+    public final static BasicStroke EDGE_CIRKLE_LINE_THKNESS = new BasicStroke(2);
 }
