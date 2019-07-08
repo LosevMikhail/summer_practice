@@ -126,8 +126,9 @@ public class TopSort {
         graph.checkV(currentVertex).c = 1;
         System.out.println("Красим вершину " + currentVertex + " в серый цвет");
 
-        if (allVisited(graph.checkV(currentVertex).way)) {
-            // если все потомки вершины посещены, красим в черный
+        //System.out.println(allBlack(graph.checkV(currentVertex).way));
+        if (allBlack(graph.checkV(currentVertex).way)) {
+            // если все потомки вершины черные, красим в черный
             graph.checkV(currentVertex).c = 2;
             stack.push(currentVertex);
             System.out.println("Красим вершину " + currentVertex + " в черный цвет");
@@ -151,7 +152,19 @@ public class TopSort {
                 }
             }
         }
+
+ 
         return false;
+    }
+
+    private boolean allBlack(Collection<Integer> vertexes) {
+        boolean answ = true;
+        for (Integer integer : vertexes) {
+            if (graph.checkV(integer).c != 2) {
+                answ = false;
+            }
+        }
+        return answ;
     }
 
     private boolean allVisited(Collection<Integer> vertexes) {
@@ -192,13 +205,25 @@ public class TopSort {
     }
 
     boolean step() {
-        while ((graph.checkV(graph.VertexList().get(lastVertex)).c != 0 )) { // == 2
+        if (allVisited(graph.VertexList())) {
+            int k = stack.size();
+            for(int i = 0; i < k; i++){
+                ans.add(stack.peek());
+                stack.pop();
+            }
+            System.out.println(ans);
+            return true;
+        }
+        if (!nextToVisit.empty()) {
+            return stepDFS();
+        }
+        while (graph.checkV(lastVertex) == null || graph.checkV(lastVertex).c != 0 ) { // == 2
             lastVertex++;
         } // пропускаем вершины которые просматривать не надо потому что они просмотрены
+        nextToVisit.push(lastVertex);
+        return stepDFS();
 
 
-
-        return false;
     }
 
     void alg(Graph g){

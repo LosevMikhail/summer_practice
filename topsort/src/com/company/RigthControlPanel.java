@@ -13,6 +13,7 @@ import java.util.LinkedList;
 public class RigthControlPanel extends JPanel {
     //AbstractGraphField graphField;
     private String input = new String();
+    private TopSort topSort;
     private Graph graph;
     private JPanel parent;
     private SourceGraphField graphField;
@@ -23,6 +24,7 @@ public class RigthControlPanel extends JPanel {
         this.sortedGraphField = sortedGraphField;
         this.parent = parent;
         this.graph = graph;
+        this.topSort = new TopSort(graph);
 
         this.setLayout(null);
         this.setPreferredSize(new Dimension(630,700));
@@ -127,6 +129,7 @@ public class RigthControlPanel extends JPanel {
                         textArea.setText(input);
                     }
                     catch(IOException ex){
+                        System.out.println(ex.getMessage());
                     }
                 }
             }
@@ -140,6 +143,15 @@ public class RigthControlPanel extends JPanel {
                 foo();
             }
         });
+
+        step.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                topSort.step();
+
+                //foo();
+            }
+        });
     }
 
     private void foo() {
@@ -150,7 +162,6 @@ public class RigthControlPanel extends JPanel {
     }
 
     private void doAllTheSteps() {
-        TopSort topSort = new TopSort(graph);
         topSort.doAllSteps();
 
         //this.sortedGraphField.setGraph(graph);
