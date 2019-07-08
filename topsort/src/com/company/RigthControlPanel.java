@@ -162,7 +162,7 @@ public class RigthControlPanel extends JPanel {
     }
 
     private void doAllTheSteps() {
-        topSort.doAllSteps();
+
 
         //this.sortedGraphField.setGraph(graph);
         //this.sortedGraphField.repaint();
