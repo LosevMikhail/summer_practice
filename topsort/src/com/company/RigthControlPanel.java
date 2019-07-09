@@ -17,13 +17,11 @@ public class RigthControlPanel extends JPanel {
     private JPanel parent;
     private SourceGraphField graphField;
     private SortedGraphField sortedGraphField;
-
     public RigthControlPanel(Graph graph, JPanel parent, SourceGraphField graphField, SortedGraphField sortedGraphField ) {
         this.graphField = graphField;
         this.sortedGraphField = sortedGraphField;
         this.parent = parent;
         this.graph = graph;
-
         this.setLayout(null);
         this.setPreferredSize(new Dimension(630,700));
         //this.setBackground(Color.BLUE);
@@ -71,14 +69,6 @@ public class RigthControlPanel extends JPanel {
         toStartButton.setLocation(step.getX() + step.getWidth() + 10, step.getY());
 
 
-
-
-
-
-
-
-
-
         this.add(jsp);
         this.add(textFieldLabel);
         this.add(addEdge);
@@ -88,7 +78,7 @@ public class RigthControlPanel extends JPanel {
         this.add(readFromFile);
         this.add(CreateGraph);
         //this.add(textArea);
-
+        TopSort topSort = new TopSort(graph);
         CreateGraph.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -132,12 +122,33 @@ public class RigthControlPanel extends JPanel {
             }
         });
 
+        toStartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for(int i = 0;i<graph.V();i++)
+                    graph.checkV(graph.VertexList().get(i)).c = 0;
+                graphField.repaint();
+                topSort.to_start();
+            }
+        });
+
         runAlg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 doAllTheSteps();
-
                 foo();
+                graphField.repaint();
+            }
+        });
+
+        step.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(topSort.step() == false){
+                    foo();
+                }
+                graphField.repaint();
+                //foo();
             }
         });
     }
@@ -150,9 +161,6 @@ public class RigthControlPanel extends JPanel {
     }
 
     private void doAllTheSteps() {
-        TopSort topSort = new TopSort(graph);
-        topSort.doAllSteps();
-
         //this.sortedGraphField.setGraph(graph);
         //this.sortedGraphField.repaint();
 

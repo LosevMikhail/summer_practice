@@ -12,13 +12,13 @@ import java.util.Random;
 import static com.company.PAR_S.*;
 
 public class SourceGraphField extends AbstractGraphField implements MouseListener, MouseMotionListener {
-
+    private TopSort topSort;
     SourceGraphField(Graph graph) {
         super(graph);
+        //this.topSort = topSort;
         setPreferredSize(new Dimension(900, 500));
         addMouseMotionListener(this);
-        addMouseListener(this);
-
+        addMouseListener(this);;
         for (int i = 0; i < graph.VertexList().size(); i++){
             Random r = new Random();
             points.put(graph.VertexList().get(i), new ActiveVertex(this, graph.VertexList().get(i), r.nextInt(600 - VERTEX_D) + VERTEX_R, r.nextInt(500 - VERTEX_D) + VERTEX_R, graph));
@@ -26,12 +26,11 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
         }
     }
 
-
-
     @Override
     public void paint(Graphics g) {
         g.setColor(new Color(255,255,255));
         g.fillRect(0,0, 900,600);
+        this.paintChildren(g);
         //добавление вершин в мапу вершин
         for (int i = 0; i < graph.VertexList().size(); i++) {
             Random r = new Random();
@@ -45,7 +44,7 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
             if (points.size() > graph.VertexList().size()) {
                 for (Map.Entry<Integer, ActiveVertex> k:
                         points.entrySet()) {
-                    if(!graph.VertexList().contains(k.getValue().v)) {
+                    if(!graph.VertexList().contains(k.getValue().vertex)) {
                         this.remove(points.get(k.getKey()));
                         points.remove(k.getKey());
                         break;
@@ -57,10 +56,15 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
 
     @Override
     protected void drawEdge(Graphics g, Edge edge, Color color, HashMap<Integer, ActiveVertex> points){
-        Point v1 = new Point(points.get(edge.v1).point.x, points.get(edge.v1).point.y);
-        Point v2 = new Point(points.get(edge.v2).point.x, points.get(edge.v2).point.y);
+        Point v1 = new Point(points.get(edge.v1).getCenter().x, points.get(edge.v1).getCenter().y);
+        Point v2 = new Point(points.get(edge.v2).getCenter().x, points.get(edge.v2).getCenter().y);
         ((Graphics2D)g).setStroke( EDGE_LINE_THIKNESS );  // Устанавливаем толщину ребра
-        g.setColor( EDGE_LINE_COLOR );
+        g.setColor(color);
+        if(graph.checkV(edge.v1).c == 0 & graph.checkV(edge.v2).c == 0)
+                g.setColor(new Color(0,0,0));
+        else if((graph.checkV(edge.v1).c == 1 & graph.checkV(edge.v2).c == 1))
+            g.setColor(new Color(0,255,0));
+
         drawArrow(g, v1, v2);
     }
 
@@ -128,20 +132,39 @@ public class SourceGraphField extends AbstractGraphField implements MouseListene
     }
 
     boolean onEdge(int x, int y){
-    return true;
+        return  true;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        //int x = e.getX();
-        //int y = e.getY();
+        int source = 0, stock = 0;
+        if (e.getButton() == MouseEvent.BUTTON3){
+            Point p = e.getPoint();
+            loop:
+            for(int j = 0; j < points.size(); j++){
+                for (int i = 0; i < /*Graph.graph.get(points.get(j).v).way.size()*/graph.checkV(points.get(j).vertex).way.size(); i++) {
+                    double ans1 = (p.x - points.get(j).getCenter().x) * (points.get(graph.checkV(points.get(j).vertex).way.get(i)).getCenter().y - points.get(j).getCenter().y);
+                    double ans2 = (p.y - points.get(j).getCenter().y) * (points.get(graph.checkV(points.get(j).vertex).way.get(i)).getCenter().x - points.get(j).getCenter().x);
 
-            int x = max(graph) + 1;
-            graph.addV(x);
-            points.put(x, new ActiveVertex(this, x, e.getX(), e.getY(), graph));
-            add(points.get(x));
+                    System.out.println(points.get(j).getCenter().x);
+                    System.out.println(points.get(j).getCenter().y);
+                    if (Math.abs(ans1 - ans2) < 1000) {
+                        source = points.get(j).vertex;
+                        stock = graph.checkV(points.get(j).vertex).way.get(i);
+                        break loop;
+                    }
+                }
+            }
+            if(graph.checkE(source, stock)!=null)
+                graph.removeE(source, stock);
             repaint();
-
+        }else {
+            int k = max(graph) + 1;
+            graph.addV(k);
+            points.put(k, new ActiveVertex(this, k, e.getX(), e.getY(), graph));
+            add(points.get(k));
+            repaint();
+        }
 
     }
 

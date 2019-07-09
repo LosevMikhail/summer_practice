@@ -1,21 +1,24 @@
 package com.company;
 
+import javax.swing.*;
 import java.util.*;
 
 public class TopSort {
+    private LeftControlPanel leftControlPanel = new LeftControlPanel();
     private Graph graph;
     private int V;
     private int E;
     private boolean[] used;
-
-
+    private final static int WHITE = 0;
+    private final static int GREY = 1;
+    private final static int BLACK = 2;
+    private final static int RED = 3;
+    public LinkedList<Integer> Edge = new LinkedList<>();
     private Stack<Integer> stack;
     public LinkedList<Integer> ans = new LinkedList<>();
-
-    private Stack<Integer> nextToVisit = new Stack<>();
-
-    private int lastVertex = 0;
-
+    private Stack<DFSState> states = new Stack<>();
+    private boolean CYCLE = false;
+    private LinkedList<Integer> list = new LinkedList<>();
     //private int nextToVisit;
 
 
@@ -32,35 +35,6 @@ public class TopSort {
         for(int i = 0;i<graph.VertexList().size()+1;i++)
             used[i] = false;
     }
-/*
-    private void DFS(int pos){
-        used[pos] = true;
-        System.out.println(pos);
-        for(int i = 0;i<graph.checkV(pos).way.size();i++){
-            if(!used[graph.checkV(pos).way.get(i)])
-                DFS(graph.checkV(pos).way.get(i));
-        }
-        stack.push(pos);
-    }
-    void alg() {
-        init();
-        stack.clear();
-        ans.clear();
-        for(int i = 0;i<graph.VertexList().size();i++){
-            if(!used[graph.VertexList().get(i)]) {
-                DFS(graph.VertexList().get(i));
-            }
-        }
-        int k = stack.size();
-        for(int i = 0;i<k;i++) {
-            ans.add(stack.peek());
-            System.out.println(stack.peek());
-            stack.pop();
-        }
-    }
-
- */
-
 
     boolean alg(){
         boolean Cycle = false;
@@ -78,79 +52,32 @@ public class TopSort {
         return true;
     }
 
-
-
     private boolean DFS(int v){
-        if(graph.checkV(v).c == 1) {
+        if(graph.checkV(v).c == GREY) {
+            CYCLE = true;
+            graph.checkV(v).c = RED;
+            int i = list.size()-1;
+            while(list.get(i)!=v){
+                graph.checkV(list.get(i)).c = RED;
+                i--;
+            }
             System.out.println("CYCLE: " + v);
             return true;
-
         }
-        if(graph.checkV(v).c == 2) {
+        if(graph.checkV(v).c == BLACK) {
             return false;
         }
-        graph.checkV(v).c = 1;
-        System.out.println("красим "+v+" в серый цвет");
+        list.add(v);
+        graph.checkV(v).c = GREY;
+        System.out.println("красим " + v + " в серый цвет");
         for (int i = 0; i < graph.checkV(v).way.size(); i++){
             if(DFS(graph.checkV(v).way.get(i))) {
                 return true;
             }
         }
         stack.push(v);
-        graph.checkV(v).c = 2;
+        graph.checkV(v).c = BLACK;
         System.out.println("красим " + v + " в черный цвет");
-        return false;
-    }
-
-    public boolean stepDFS() {
-        int currentVertex = nextToVisit.pop();
-
-        System.out.println("Начало шага. вершина " + currentVertex);
-        System.out.println("Стек: " + nextToVisit);
-
-        if (graph.checkV(currentVertex) == null) {
-            System.out.println("Нет вершины " + currentVertex);
-            System.out.println("Выходим из шага ");
-            return false;
-        }
-
-        if (graph.checkV(currentVertex).c == 1) {
-            System.out.println("CYCLE: " + currentVertex);
-            return true;
-        }
-
-        if (graph.checkV(currentVertex).c == 2) {
-            return false;
-        }
-
-        graph.checkV(currentVertex).c = 1;
-        System.out.println("Красим вершину " + currentVertex + " в серый цвет");
-
-        if (allVisited(graph.checkV(currentVertex).way)) {
-            // если все потомки вершины посещены, красим в черный
-            graph.checkV(currentVertex).c = 2;
-            stack.push(currentVertex);
-            System.out.println("Красим вершину " + currentVertex + " в черный цвет");
-        }
-
-        for (int i = 0; i < graph.checkV(currentVertex).way.size(); i++) { // добавили в стек все смежные вершины (-->)
-            nextToVisit.push(graph.checkV(currentVertex).way.get(i));
-            System.out.println("Добавляем вершину  " + nextToVisit.peek() + " в стек");
-            System.out.println("Стек: " + nextToVisit);
-
-        }
-
-        if (allVisited(nextToVisit)) { // докрашиваем в черный
-            for (int i = 0; i < graph.V(); i++) {
-                // не до v  а до макс. номера вершины
-                if (graph.checkV(graph.VertexList().get(i)).c == 1) {
-                    graph.checkV(graph.VertexList().get(i)).c = 2;
-                    stack.push(graph.VertexList().get(i));
-
-                    System.out.println("Красим вершину " + i + " в черный цвет");
-                }
-            }
-        }
         return false;
     }
 
@@ -164,41 +91,85 @@ public class TopSort {
         return answ;
     }
 
+    public void stepDFS() {
+        DFSState state = states.pop();
+        System.out.println("шаг начат. состояние: " + state);
+        System.out.println("стек состояний: " + states);
+
+        if (state.nextChild == 0) { // не вернулись в вершину из следующей, а зашли из предыдущей
+            if (graph.checkV(state.vertex).c == GREY) {
+                leftControlPanel = new LeftControlPanel();
+                leftControlPanel.commentsLabel.setText("CYCLE");
+                System.out.println("CYCLE: " + state.vertex);
+                int i = list.size()-1;
+                graph.checkV(state.vertex).c = RED;
+                while(list.get(i)!=state.vertex){
+                    graph.checkV(list.get(i)).c = RED;
+                    i--;
+                }
+                return;
+            }
+            if (graph.checkV(state.vertex).c == BLACK) {
+                return;
+            }
+            Edge.add(state.vertex);
+            graph.checkV(state.vertex).c = GREY;
+            leftControlPanel = new LeftControlPanel();
+            leftControlPanel.commentsLabel.setText("красим " + state.vertex + " в серый цвет");
+            list.add(state.vertex);
+            System.out.println("красим " + state.vertex + " в серый цвет");
+            //return;
+        }
+
+        if (state.nextChild < graph.checkV(state.vertex).way.size()) { // вернулиись из следующей
+            states.push(new DFSState(state.vertex, state.nextChild + 1));
+            System.out.println("Pushing " + states.peek());
+            states.push(new DFSState(graph.checkV(state.vertex).way.get(state.nextChild), 0));
+            System.out.println("Pushing " + states.peek());
+            return;
+        }
+
+        // все потомки посещены
+        stack.push(state.vertex);
+        graph.checkV(state.vertex).c = BLACK;
+        leftControlPanel = new LeftControlPanel();
+        leftControlPanel.commentsLabel.setText("красим " + state.vertex + " в черный цвет");
+        System.out.println("красим " + state.vertex + " в черный цвет");
+    }
 
 
-    boolean doAllSteps(){
-        used = new boolean[graph.V()];
-        System.out.println("Start doing steps---------------");
 
-        for(int i = 0; i < graph.V();i++) {
-            if (graph.checkV(graph.VertexList().get(i)).c != 0 )
-                continue;
-            nextToVisit.push(i);
-            while (!nextToVisit.empty()) {
-                if(stepDFS()) {
-                    return false;
+    boolean step() {
+        if (states.empty()) {
+            for (int i = 0; i < graph.V(); i ++) {
+                if (graph.checkV(i) != null && graph.checkV(i).c == 0) {
+                    states.push(new DFSState(i, 0));
+                    break;
                 }
             }
+        } // начинаем смотреть следующую компоненту сильной связности
+        if (!states.empty()) {// делать шаг
+            stepDFS();
         }
-
-        int k = stack.size();
-        for(int i = 0; i < k; i++){
-            ans.add(stack.peek());
-            stack.pop();
+        else { // все вершины просмотрены, выводим ответ
+            // разворачиваем стек, получаем ответ
+            int k = stack.size();
+            for(int i = 0;i < k; i++){
+                ans.add(stack.peek());
+                stack.pop();
+            }
+            System.out.println("Answer: " + ans);
+            return false;
         }
-
-        System.out.println("Ответ: " + ans);
         return true;
     }
 
-    boolean step() {
-        while ((graph.checkV(graph.VertexList().get(lastVertex)).c != 0 )) { // == 2
-            lastVertex++;
-        } // пропускаем вершины которые просматривать не надо потому что они просмотрены
-
-
-
-        return false;
+    void to_start(){
+        System.out.println("to start");
+        states.clear();
+        ans.clear();
+        stack.clear();
+        list.clear();
     }
 
     void alg(Graph g){
@@ -211,3 +182,206 @@ public class TopSort {
         alg();
     }
 }
+/*
+package com.company;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+import java.util.*;
+public class TopSort {
+    private Graph graph;
+    private int V;
+    private int E;
+    private boolean[] used;
+    int i =0;
+    boolean flag = false;
+    private Stack<Integer> stack;
+    private  Stack<Integer> for_use = new Stack<>();
+    public LinkedList<Integer> ans = new LinkedList<>();
+    private Stack<Integer> nextToVisit = new Stack<>();
+    private int lastVertex = 0;
+    //private int nextToVisit;
+    public Graph Processing_Graph(){
+        return this.graph;
+    }
+    public TopSort(Graph g){
+        this.graph = g;
+        init();
+    }
+    private void init(){
+        V = graph.V();
+        E = graph.E();
+        used = new boolean[graph.VertexList().size()+1];
+        stack = new Stack<>();
+        for(int i = 0;i<graph.VertexList().size()+1;i++)
+            used[i] = false;
+    }
+    void DFS(int v){
+        if(stack.size()==graph.V())
+            return;
+        if(graph.checkV(v).c == 1){
+            flag = true;
+           return;
+        }
+        if(graph.checkV(v).c == 2){
+            stack.push(v);
+            return;
+        }
+        System.out.println("красим вершину в серый цвет "+v);
+        graph.checkV(v).c = 1;
+        if(graph.checkV(v).way.size() == 0){
+            for(int i = 0;i<graph.VertexList().size();i++){
+                if(graph.checkV(graph.VertexList().get(i)).c == 0){
+                    System.out.println("push for_use "+graph.VertexList().get(i));
+                    for_use.push(graph.VertexList().get(i));
+                    this.i = graph.VertexList().get(i);
+                    return;
+                }
+            }
+            for
+            System.out.println("красим вершину в черный цвет "+v);
+            graph.checkV(v).c = 2;
+            System.out.println("push stack "+v);
+            stack.push(v);
+            for_use.pop();
+            this.i = for_use.pop();
+        }
+        else {
+            for(int i = 0;i<graph.checkV(v).way.size();i++){
+                if(graph.checkV(graph.checkV(v).way.get(i)).c == 0){
+                    System.out.println("push for_use prev "+graph.checkV(v).way.get(i));
+                    for_use.push(graph.checkV(v).way.get(i));
+                    int j = 0;
+                    while(graph.VertexList().get(j)!=graph.checkV(v).way.get(i))
+                        j++;
+                    this.i = j;
+                    return;
+                }
+            }
+        }
+    }
+    void alg(){
+        if(graph.VertexList().size()==0)
+            return;
+        if(i>=graph.VertexList().size())
+            return;
+        DFS(graph.VertexList().get(i));
+    }
+    void alg(Graph g){
+        graph = g;
+        ans.clear();
+        stack.clear();
+        for(int i = 0;i<graph.V();i++){
+            graph.checkV(graph.VertexList().get(i)).c = 0;
+        }
+        alg();
+    }
+}
+ */
+/*
+package com.company;
+
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+
+import java.util.*;
+
+public class TopSort {
+    private Graph graph;
+    private int V;
+    private int E;
+    private boolean[] used;
+    int i =0;
+    boolean flag = false;
+    private Stack<Integer> stack;
+    private  Stack<Integer> for_use = new Stack<>();
+    public LinkedList<Integer> ans = new LinkedList<>();
+
+    private Stack<Integer> nextToVisit = new Stack<>();
+
+    private int lastVertex = 0;
+
+    //private int nextToVisit;
+
+    public Graph Processing_Graph(){
+        return this.graph;
+    }
+
+    public TopSort(Graph g){
+        this.graph = g;
+        init();
+    }
+
+    private void init(){
+        V = graph.V();
+        E = graph.E();
+        used = new boolean[graph.VertexList().size()+1];
+        stack = new Stack<>();
+        for(int i = 0;i<graph.VertexList().size()+1;i++)
+            used[i] = false;
+    }
+
+    void DFS(int v){
+        if(stack.size()==graph.V())
+            return;
+        if(graph.checkV(v).c == 1){
+            flag = true;
+           return;
+        }
+        if(graph.checkV(v).c == 2){
+            stack.push(v);
+            return;
+        }
+        System.out.println("красим вершину в серый цвет "+v);
+        graph.checkV(v).c = 1;
+        if(graph.checkV(v).way.size() == 0){
+            for(int i = 0;i<graph.VertexList().size();i++){
+                if(graph.checkV(graph.VertexList().get(i)).c == 0){
+                    System.out.println("push for_use "+graph.VertexList().get(i));
+                    for_use.push(graph.VertexList().get(i));
+                    this.i = graph.VertexList().get(i);
+                    return;
+                }
+            }
+            for
+            System.out.println("красим вершину в черный цвет "+v);
+            graph.checkV(v).c = 2;
+            System.out.println("push stack "+v);
+            stack.push(v);
+            for_use.pop();
+            this.i = for_use.pop();
+        }
+        else {
+            for(int i = 0;i<graph.checkV(v).way.size();i++){
+                if(graph.checkV(graph.checkV(v).way.get(i)).c == 0){
+                    System.out.println("push for_use prev "+graph.checkV(v).way.get(i));
+                    for_use.push(graph.checkV(v).way.get(i));
+                    int j = 0;
+                    while(graph.VertexList().get(j)!=graph.checkV(v).way.get(i))
+                        j++;
+                    this.i = j;
+                    return;
+                }
+            }
+        }
+
+    }
+
+    void alg(){
+        if(graph.VertexList().size()==0)
+            return;
+        if(i>=graph.VertexList().size())
+            return;
+        DFS(graph.VertexList().get(i));
+    }
+
+    void alg(Graph g){
+        graph = g;
+        ans.clear();
+        stack.clear();
+        for(int i = 0;i<graph.V();i++){
+            graph.checkV(graph.VertexList().get(i)).c = 0;
+        }
+        alg();
+    }
+
+}
+
+ */
